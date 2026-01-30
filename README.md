@@ -11,10 +11,7 @@
 | last_name          | string | null: false               |
 | first_name_kana    | string | null: false               |
 | last_name_kana     | string | null: false               |
-| birth_year         | integer| null: false               |
-| birth_month        | integer| null: false               |
-| birth_date         | integer| null: false               |
-
+| birthday           | date   | null: false               |
 ### Association
 
 - has_many :items
@@ -27,18 +24,18 @@
 | title                  | string     | null: false                    |
 | content                | text       | null: false                    |
 | user                   | references | null: false, foreign_key: true |
-| category               | integer    | null: false                    |
-| condition              | integer    | null: false                    |
-| shipping_fee_burden    | integer    | null: false                    |
-| prefecture             | integer    | null: false                    |
-| shipping_day           | integer    | null: false                    |
+| category_id            | integer    | null: false                    |
+| condition_id           | integer    | null: false                    |
+| shipping_fee_burden_id | integer    | null: false                    |
+| prefecture_id          | integer    | null: false                    |
+| shipping_day_id        | integer    | null: false                    |
 | price                  | integer    | null: false                    |
 
 
 ### Association
 
-- belongs_to :users
-- has_one    :orders
+- belongs_to :user
+- has_one    :order
 
 ## orders テーブル
 
@@ -50,5 +47,18 @@
 ### Association
 
 - belongs_to :user
-- belongs_to :items
+- belongs_to :item
+- belongs_to :address
 
+### addresses テーブル
+
+| Column             | Type       | Options                                      |
+| ------------------ | ---------- | -------------------------------------------- |
+| post_code          | string     | null: false, foreign_key: true               |
+| prefecture_id      | integer    | null: false                                  |
+| city               | string     | null: false                                  |
+| street_address     | string     | null: false                                  |
+| building           | string     |                                              |
+| phone_number       | integer    | null false                                   |
+
+- has_many :orders
