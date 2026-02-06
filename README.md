@@ -54,11 +54,12 @@
 
 | Column             | Type       | Options                                      |
 | ------------------ | ---------- | -------------------------------------------- |
-| post_code          | string     | null: false, foreign_key: true               |
+| order              | references | null: false, foreign_key: true, unique: true |
+| post_code          | string     | null: false                                  |
 | prefecture_id      | integer    | null: false                                  |
 | city               | string     | null: false                                  |
 | street_address     | string     | null: false                                  |
 | building           | string     |                                              |
-| phone_number       | integer    | null false                                   |
+| phone_number       | string     | null false                                   |
 
-- has_many :orders
+- has_one :order
