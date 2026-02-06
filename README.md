@@ -48,7 +48,7 @@
 
 - belongs_to :user
 - belongs_to :item
-- belongs_to :address
+- has_one :address
 
 ### addresses テーブル
 
@@ -62,4 +62,4 @@
 | building           | string     |                                              |
 | phone_number       | string     | null false                                   |
 
-- has_one :order
+- belongs_to :order
