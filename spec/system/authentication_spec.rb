@@ -111,4 +111,31 @@ RSpec.describe 'Authentication', type: :system do
     expect(page).to have_link('ログイン', href: new_user_session_path)
     expect(page).to have_link('新規登録', href: new_user_registration_path)
   end
+
+  it '形式が要件外だと登録できず、エラーメッセージが表示される' do
+  visit new_user_registration_path
+
+  fill_in 'nickname', with: 'aaa'
+  fill_in 'email', with: 'aaa2@example.com'
+  fill_in 'password', with: 'aaaaaa'
+  fill_in 'password-confirmation', with: 'aaaaaa'
+  fill_in 'last-name', with: 'Yamada'
+  fill_in 'first-name', with: 'Taro'
+  fill_in 'last-name-kana', with: 'やまだ'
+  fill_in 'first-name-kana', with: 'たろう'
+  select '1995', from: 'user_birthday_1i'
+  select '1', from: 'user_birthday_2i'
+  select '1', from: 'user_birthday_3i'
+
+  expect do
+    click_button '会員登録'
+  end.not_to change(User, :count)
+
+  expect(current_path).to eq(user_registration_path)
+
+  expect(page).to have_content('全角')
+  expect(page).to have_content('全角カタカナ')
+  expect(page).to have_content('英字と数字')
+ end
+
 end
