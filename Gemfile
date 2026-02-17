@@ -84,3 +84,7 @@ group :development, :test do
   gem 'capybara'
   gem 'factory_bot_rails'
 end
+
+group :development, :test do
+  gem 'dotenv-rails'
+end
