@@ -11,4 +11,5 @@ class Category < ActiveHash::Base
    { id: 9, name: 'ハンドメイド' },
    { id: 10, name: 'その他' }
  ]
+#  差分を作りました
 end
