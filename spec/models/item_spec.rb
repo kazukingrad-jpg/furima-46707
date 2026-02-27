@@ -68,26 +68,25 @@ RSpec.describe Item, type: :model do
       it "priceが299以下だと保存できない" do
         item.price = 299
         item.valid?
-        # あなたのmodelのmessageに合わせてここは変える（下の注釈参照）
-        expect(item.errors.full_messages.join).to match(/Price/)
+        expect(item.errors.full_messages).to include("Price は300〜9,999,999の間で入力してください")
       end
 
       it "priceが10,000,000以上だと保存できない" do
         item.price = 10_000_000
         item.valid?
-        expect(item.errors.full_messages.join).to match(/Price/)
+        expect(item.errors.full_messages).to include("Price は300〜9,999,999の間で入力してください")
       end
 
       it "priceが全角数字だと保存できない" do
         item.price = "３００"
         item.valid?
-        expect(item.errors.full_messages.join).to match(/Price/)
+        expect(item.errors.full_messages).to include("Price は300〜9,999,999の間で入力してください")
       end
 
       it "priceが英字混在だと保存できない" do
         item.price = "300a"
         item.valid?
-        expect(item.errors.full_messages.join).to match(/Price/)
+        expect(item.errors.full_messages).to include("Price は300〜9,999,999の間で入力してください")
       end
 
       it "userが紐付いていないと保存できない" do

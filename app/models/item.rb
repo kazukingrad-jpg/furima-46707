@@ -1,6 +1,6 @@
 class Item < ApplicationRecord
   belongs_to :user
-  has_one :order
+  # has_one :order
 
   has_one_attached :image
 
@@ -25,7 +25,7 @@ class Item < ApplicationRecord
     validates :prefecture_id
     validates :shipping_day_id
   end
-  
+
   validates :price,
             numericality: {
               only_integer: true,
@@ -34,5 +34,4 @@ class Item < ApplicationRecord
               message: "は300〜9,999,999の間で入力してください"
             }
 
-  validates :price, format: { with: /\A[0-9]+\z/, message: "は半角数字で入力してください" }
 end
