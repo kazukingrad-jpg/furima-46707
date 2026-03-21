@@ -56,9 +56,9 @@ class ItemsController < ApplicationController
   end
 
   def move_to_root
-    unless @item.user == current_user
-      redirect_to root_path
-    end
+  unless @item.user == current_user && @item.order.blank?
+    redirect_to root_path
   end
+end
 
 end

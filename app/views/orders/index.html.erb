@@ -2,7 +2,17 @@
 <%= include_gon %>
 
 <div class='transaction-contents'>
+
   <div class='transaction-main'>
+      <% if @address && @address.errors.any? %>
+  <div class="error-messages">
+    <ul>
+      <% @address.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
     <h1 class='transaction-title-text'>
       購入内容の確認
     </h1>
@@ -33,7 +43,7 @@
     </div>
     <%# /支払額の表示 %>
 
-    <%= form_with model: @order, url: item_orders_path(@item), id: 'charge-form', class: 'transaction-form-wrap', local: true do |f| %>
+    <%= form_with model: @order, url: item_orders_path(@item), id: 'charge-form', class: 'transaction-form-wrap', local: true, html: { novalidate: true } do |f| %>
     <%# カード情報の入力 %>
     <div class='credit-card-form'>
       <h1 class='info-input-haedline'>

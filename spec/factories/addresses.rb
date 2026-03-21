@@ -6,6 +6,5 @@ FactoryBot.define do
     street_address { '青山1-1-1' }
     building { '柳ビル103' }
     phone_number { '09012345678' }
-    association :order
   end
 end
