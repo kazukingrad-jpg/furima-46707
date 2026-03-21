@@ -2,9 +2,6 @@ const pay = () => {
   const form = document.getElementById("charge-form");
   if (!form) return;
 
-  if (form.dataset.payjpInitialized === "true") return;
-  form.dataset.payjpInitialized = "true";
-
   const publicKey = gon.payjp_key;
   if (!publicKey) return;
 
@@ -24,23 +21,23 @@ const pay = () => {
 
     payjp.createToken(numberElement).then((response) => {
       if (response.error) {
-        alert("カード情報に誤りがあります");
-      } else {
-        const token = response.id;
-
-        const tokenInput = document.createElement("input");
-        tokenInput.setAttribute("type", "hidden");
-        tokenInput.setAttribute("name", "token");
-        tokenInput.setAttribute("value", token);
-
-        form.appendChild(tokenInput);
-
-        numberElement.clear();
-        expiryElement.clear();
-        cvcElement.clear();
-
-        form.submit();
+        return;
       }
+
+      const token = response.id;
+
+      const tokenInput = document.createElement("input");
+      tokenInput.setAttribute("type", "hidden");
+      tokenInput.setAttribute("name", "token");
+      tokenInput.setAttribute("value", token);
+
+      form.appendChild(tokenInput);
+
+      numberElement.clear();
+      expiryElement.clear();
+      cvcElement.clear();
+
+      form.submit();
     });
   });
 };

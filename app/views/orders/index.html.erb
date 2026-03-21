@@ -1,4 +1,5 @@
 <%= render "shared/second-header"%>
+<%= include_gon %>
 
 <div class='transaction-contents'>
   <div class='transaction-main'>
@@ -6,8 +7,6 @@
       購入内容の確認
     </h1>
     <%# 購入内容の表示 %>
-
-    <p>ENV: <%= ENV["PAYJP_PUBLIC_KEY"] %></p>
 
     <div class='buy-item-info'>
       <%= image_tag @item.image, class: 'buy-item-img' if @item.image.attached? %>
@@ -34,7 +33,7 @@
     </div>
     <%# /支払額の表示 %>
 
-    <%= form_with url: item_orders_path(@item), id: 'charge-form', class: 'transaction-form-wrap', local: true do |f| %>
+    <%= form_with model: @order, url: item_orders_path(@item), id: 'charge-form', class: 'transaction-form-wrap', local: true do |f| %>
     <%# カード情報の入力 %>
     <div class='credit-card-form'>
       <h1 class='info-input-haedline'>

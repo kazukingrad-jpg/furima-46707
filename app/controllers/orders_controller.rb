@@ -4,6 +4,8 @@ class OrdersController < ApplicationController
   before_action :move_to_index
 
   def index
+    @order = Order.new
+    @address = Address.new
     gon.payjp_key = ENV["PAYJP_PUBLIC_KEY"]
   end
 
@@ -11,16 +13,27 @@ class OrdersController < ApplicationController
     @order = Order.new(user_id: current_user.id, item_id: @item.id)
     @address = Address.new(address_params)
 
-    if @order.valid? && @address.valid?
-      pay_item
-      @order.save
-      @address.order_id = @order.id
-      @address.save
-      redirect_to root_path
-    else
+    if params[:token].blank?
       gon.payjp_key = ENV["PAYJP_PUBLIC_KEY"]
-      render :index, status: :unprocessable_entity
+      render :index, status: :unprocessable_content
+      return
     end
+
+    ActiveRecord::Base.transaction do
+      @order.save!
+      pay_item
+      @address.order_id = @order.id
+      @address.save!
+    end
+
+    redirect_to item_path(@item)
+
+  rescue ActiveRecord::RecordInvalid
+    gon.payjp_key = ENV["PAYJP_PUBLIC_KEY"]
+    render :index, status: :unprocessable_content
+  rescue Payjp::Error
+    gon.payjp_key = ENV["PAYJP_PUBLIC_KEY"]
+    render :index, status: :unprocessable_content
   end
 
   private
