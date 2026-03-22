@@ -1,63 +1,49 @@
 class OrdersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_item
-  before_action :move_to_index
 
   def index
-    @order = Order.new
-    @address = Address.new
-    gon.payjp_key = ENV["PAYJP_PUBLIC_KEY"]
+    @order_address = OrderAddress.new
+    gon.payjp_key = ENV['PAYJP_PUBLIC_KEY']
+    redirect_to root_path if @item.user_id == current_user.id || @item.order.present?
   end
 
   def create
-    @order = Order.new(user_id: current_user.id, item_id: @item.id)
-    @address = Address.new(address_params)
+    @order_address = OrderAddress.new(order_address_params)
+    gon.payjp_key = ENV['PAYJP_PUBLIC_KEY']
 
-    if params[:token].blank?
-      gon.payjp_key = ENV["PAYJP_PUBLIC_KEY"]
-      render :index, status: :unprocessable_content
-      return
-    end
-
-    ActiveRecord::Base.transaction do
-      @order.save!
+    if @order_address.valid?
       pay_item
-      @address.order_id = @order.id
-      @address.save!
+      @order_address.save
+      redirect_to root_path
+    else
+      render :index, status: :unprocessable_entity
     end
-
-    redirect_to item_path(@item)
-
-  rescue ActiveRecord::RecordInvalid
-    gon.payjp_key = ENV["PAYJP_PUBLIC_KEY"]
-    render :index, status: :unprocessable_content
-  rescue Payjp::Error
-    gon.payjp_key = ENV["PAYJP_PUBLIC_KEY"]
-    render :index, status: :unprocessable_content
   end
 
   private
 
-  def address_params
-    params.require(:order).permit(
-      :post_code, :prefecture_id, :city, :street_address, :building, :phone_number
+  def order_address_params
+    params.require(:order_address).permit(
+      :post_code,
+      :prefecture_id,
+      :city,
+      :street_address,
+      :building,
+      :phone_number
+    ).merge(user_id: current_user.id, item_id: @item.id, token: params[:order_address][:token])
+  end
+
+  def pay_item
+    Payjp.api_key = ENV['PAYJP_SECRET_KEY']
+    Payjp::Charge.create(
+      amount: @item.price,
+      card: order_address_params[:token],
+      currency: 'jpy'
     )
   end
 
   def set_item
     @item = Item.find(params[:item_id])
-  end
-
-  def move_to_index
-    redirect_to root_path if @item.user_id == current_user.id || @item.order.present?
-  end
-
-  def pay_item
-    Payjp.api_key = ENV["PAYJP_SECRET_KEY"]
-    Payjp::Charge.create(
-      amount: @item.price,
-      card: params[:token],
-      currency: 'jpy'
-    )
   end
 end

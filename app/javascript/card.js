@@ -2,6 +2,9 @@ const pay = () => {
   const form = document.getElementById("charge-form");
   if (!form) return;
 
+  if (form.dataset.payjpInitialized === "true") return;
+  form.dataset.payjpInitialized = "true";
+
   const publicKey = gon.payjp_key;
   if (!publicKey) return;
 
@@ -28,7 +31,7 @@ const pay = () => {
 
       const tokenInput = document.createElement("input");
       tokenInput.setAttribute("type", "hidden");
-      tokenInput.setAttribute("name", "token");
+      tokenInput.setAttribute("name", "order_address[token]");
       tokenInput.setAttribute("value", token);
 
       form.appendChild(tokenInput);
