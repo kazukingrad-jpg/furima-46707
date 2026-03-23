@@ -34,4 +34,7 @@ class Item < ApplicationRecord
               message: "は300〜9,999,999の間で入力してください"
             }
 
+  def sold_out?
+    order.present?
+  end
 end
