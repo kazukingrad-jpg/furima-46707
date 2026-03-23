@@ -3,6 +3,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
   
   has_many :items, dependent: :destroy
+  # Userモデル差分追記
   has_many :orders, dependent: :destroy
  
  
